@@ -44,10 +44,7 @@ struct SignInView: View {
                 Spacer()
             }
         }
-        .alert(
-            messageError,
-            isPresented: $showError
-        ) {
+        .alert(messageError, isPresented: $showError) {
             Button("Ok") { }
         }
     }

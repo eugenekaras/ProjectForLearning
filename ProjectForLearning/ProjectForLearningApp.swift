@@ -21,6 +21,7 @@ struct ProjectForLearningApp: App {
             ContentView()
                 .environmentObject(appState)
                 .environmentObject(appState.userAuth)
+                .environmentObject(appState.viewState)
         }
     }
 }

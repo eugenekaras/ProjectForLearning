@@ -25,6 +25,7 @@
 "Ok" = "Ok";
 "You need to login again" = "You need to login again";
 "Are you sure to delete the user?" = "Are you sure to delete the user?";
+"Back" = "Назад";
 
 // MARK: SomeView
 "Hello, from Some View!" = "Hello, from Some View!";

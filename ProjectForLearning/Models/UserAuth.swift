@@ -20,21 +20,28 @@ class UserAuth: ObservableObject {
         case signedOut
     }
     
-    @Published var user: User?
+    @Published var userProfile: UserProfile?
     @Published var state: SignInState = .unknown
-    
+
     @MainActor
-    func checkUser() {
+    func updateUserProfile() async throws {
         guard let user = Auth.auth().currentUser else {
-            self.user = nil
+            self.userProfile = nil
             self.state = .signedOut
             return
         }
-        self.user = User(
-            userId: user.uid,
-            email: user.email,
-            displayName: user.displayName,
-            url: user.photoURL)
+        
+        self.userProfile = try await UserProfile(userId: user.uid)
+        if self.userProfile == nil {
+            self.userProfile = UserProfile(user: User(
+                userId: user.uid,
+                email: user.email,
+                displayName: user.displayName,
+                phoneNumber: user.phoneNumber,
+                url: user.photoURL),
+                 userAvatar: nil)
+            try await self.userProfile?.saveProfileData()
+        }
         self.state = .signedIn
     }
     
@@ -63,13 +70,13 @@ class UserAuth: ObservableObject {
     
     func signInAnonymously() async throws {
         try await Auth.auth().signInAnonymously()
-        await checkUser()
+        try await updateUserProfile()
     }
     
     func signIn() async throws {
         let credential = try await getCredential()
         try await Auth.auth().signIn(with: credential)
-        await checkUser()
+        try await updateUserProfile()
     }
     
     func reauthenticate() async throws {
@@ -83,7 +90,7 @@ class UserAuth: ObservableObject {
     func signOut() async throws {
         let firebaseAuth = Auth.auth()
         try firebaseAuth.signOut()
-        await checkUser()
+        try await updateUserProfile()
     }
     
     func deleteUser() async throws {
@@ -91,7 +98,7 @@ class UserAuth: ObservableObject {
             fatalError("Error getting current user for delete")
         }
         try await user.delete()
-        await checkUser()
+        try await updateUserProfile()
     }
 }
 

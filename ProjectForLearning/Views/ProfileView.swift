@@ -4,7 +4,6 @@
 //
 //  Created by Евгений Карась on 20.01.23.
 //
-
 import SwiftUI
 import FirebaseAuth
 
@@ -29,29 +28,10 @@ struct ProfileView: View {
     
     var body: some View {
         VStack {
-            HStack {
-                UserImage(url: userAuth.user?.url)
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 100, height: 100, alignment: .center)
-                    .cornerRadius(8)
-                VStack(alignment: .leading) {
-                    Text(userAuth.user?.displayName ?? "Anonymous")
-                        .font(.headline)
-                    
-                    Text(userAuth.user?.email ?? "")
-                        .font(.subheadline)
-                }
-                Spacer()
-            }
-            .frame(maxWidth: .infinity)
-            .background(Color(.secondarySystemBackground))
-            .cornerRadius(12)
-            .padding()
-            
+            UserFormView()
             Spacer()
             
             Text("Hello, from Profile!")
-            
             Spacer()
             
             Button  {

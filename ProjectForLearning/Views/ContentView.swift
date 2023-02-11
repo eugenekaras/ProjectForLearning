@@ -7,30 +7,37 @@
 
 import SwiftUI
 
-enum ContentViewState {
-    case splash
-    case greeting
-    case signIn
-    case signOut
+enum ContentViewError: LocalizedError {
+    case unknownError(error: Error)
+    
+    var errorDescription: String? {
+        switch self {
+        case .unknownError(let error):
+            return error.localizedDescription
+        }
+    }
 }
 
 struct ContentView: View {
     @EnvironmentObject var userAuth: UserAuth
+    @EnvironmentObject var viewState: ViewState
     
-    @State private var contentViewState = ContentViewState.splash
+    @State private var showError = false
+    @State private var error: ContentViewError?
     
     var body: some View {
         Group {
-            switch self.contentViewState {
+            switch viewState.contentViewState {
             case .splash: SplashScreenView()
             case .greeting: GreetingPageView()
             case .signIn: MainTabBarView()
             case .signOut: SignInView()
+            case .editUserData: EditProfileView(userProfile: userAuth.userProfile ?? USER_DEFAULT)
             }
         }
-        .animation(.default, value: self.contentViewState)
+        .animation(.default, value: viewState.contentViewState)
         .task {
-            userAuth.checkUser()
+            checkUser()
         }
         .onChange(of: userAuth.state) { newValue in
             updateViewState(with: newValue)
@@ -38,19 +45,38 @@ struct ContentView: View {
     }
     
     func updateViewState(with signInState: UserAuth.SignInState) {
-        if (self.contentViewState == .signOut) && (signInState == .signedIn) {
-            self.contentViewState = .greeting
+        if (viewState.contentViewState == .signOut) && (signInState == .signedIn) {
+            viewState.contentViewState = .greeting
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 3.0){
-                self.contentViewState = .signIn
+                viewState.contentViewState = .signIn
             }
         } else {
             switch signInState {
-            case .unknown: self.contentViewState = .splash
-            case .signedIn: self.contentViewState = .signIn
-            case .signedOut: self.contentViewState = .signOut
+            case .unknown: viewState.contentViewState = .splash
+            case .signedIn: viewState.contentViewState = .signIn
+            case .signedOut: viewState.contentViewState = .signOut
             }
         }
+    }
+    
+    func checkUser() {
+        Task {
+            do {
+                try await userAuth.updateUserProfile()
+            } catch {
+                showError(error: error)
+            }
+        }
+    }
+    
+    @MainActor
+    func showError(error: Error) {
+        guard let error = error as NSError? else {
+            fatalError("Unknown error")
+        }
+        self.error = ContentViewError.unknownError(error: error)
+        self.showError.toggle()
     }
 }
 
