@@ -32,6 +32,7 @@ struct ContentView: View {
             case .greeting: GreetingPageView()
             case .signIn: MainTabBarView()
             case .signOut: SignInView()
+//            case .editUserData: EditProfileView()
             case .editUserData: EditProfileView(userProfile: userAuth.userProfile ?? USER_DEFAULT)
             }
         }
@@ -82,9 +83,11 @@ struct ContentView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var userAuth = UserAuth()
+    static var viewState = ViewState()
     
     static var previews: some View {
         ContentView()
             .environmentObject(userAuth)
+            .environmentObject(viewState)
     }
 }

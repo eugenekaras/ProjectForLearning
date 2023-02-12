@@ -10,7 +10,7 @@ import SwiftUI
 let USER_DEFAULT: UserProfile = UserProfile(user: User(userId: "12345", email: "", displayName: "", phoneNumber: "", url: nil), userAvatar: nil)
 
 struct UserProfile {
-    var userAvatar: UIImage? = UIImage(systemName: "person.crop.circle.badge.questionmark.fill")
+    var userAvatar: UIImage?
     var userData: User
     
     init?(userId: String) async throws {
@@ -36,7 +36,7 @@ struct UserProfile {
                 try await saveImage(image: image, fileName: userData.userId)
             }
     }
-    
+
     func getImage(fileName: String) async throws -> UIImage? {
         if let directory = try? FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: false) {
             return UIImage(contentsOfFile: URL(fileURLWithPath: directory.absoluteString).appendingPathComponent("\(fileName).jpg").path)
@@ -55,6 +55,7 @@ struct UserProfile {
         do {
             try data.write(to: directory.appendingPathComponent("\(fileName).jpg")!)
         } catch {
+            print(error.localizedDescription)
         }
     }
 }

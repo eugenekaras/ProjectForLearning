@@ -14,20 +14,20 @@ struct UserFormView: View {
     var body: some View {
         ZStack(alignment: .topTrailing){
             HStack {
-                UserImage(url: userAuth.userProfile?.userData.url)
+                UserImage(userProfile: userAuth.userProfile ?? USER_DEFAULT)
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 140, height: 140, alignment: .center)
                     .cornerRadius(8)
-//                    .clipShape(Capsule())
+                
                 VStack(alignment: .leading) {
-                    Text(userAuth.userProfile?.userData.displayName ?? "123")
+                    Text(userAuth.userProfile?.userData.displayName ?? "")
                         .font(.headline)
                         .padding(.bottom)
                     
-                    Text(userAuth.userProfile?.userData.email ?? "123")
+                    Text(userAuth.userProfile?.userData.email ?? "")
                         .font(.subheadline)
                     
-                    Text(userAuth.userProfile?.userData.phoneNumber ?? "123")
+                    Text(userAuth.userProfile?.userData.phoneNumber ?? "")
                         .font(.subheadline)
                 }
                 Spacer()
@@ -57,9 +57,11 @@ struct UserFormView: View {
 
 struct UserFormView_Previews: PreviewProvider {
     static var userAuth = UserAuth()
-
+    static var viewState = ViewState()
+    
     static var previews: some View {
         UserFormView()
             .environmentObject(userAuth)
+            .environmentObject(viewState)
     }
 }

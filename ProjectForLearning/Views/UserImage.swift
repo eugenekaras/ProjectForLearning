@@ -8,10 +8,14 @@
 import SwiftUI
 
 struct UserImage: View {
-    let url: URL?
+    var userProfile: UserProfile
     
     var body: some View {
-        if let url = url {
+        if let uiImage = userProfile.userAvatar {
+            Image(uiImage: uiImage)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+        } else if let url = userProfile.userData.url {
             AsyncImage(url: url) { image in
                 image
                     .resizable()
@@ -29,6 +33,6 @@ struct UserImage: View {
 
 struct NetworkImage_Previews: PreviewProvider {
     static var previews: some View {
-        UserImage(url: nil)
+        UserImage(userProfile: USER_DEFAULT)
     }
 }
