@@ -27,17 +27,11 @@ struct EditProfileView: View {
     @State private var error: EditProfileError?
     @State var userProfile: UserProfile
     @State var mode: EditMode = .inactive
+    
     @State private var showChangePhotoConfirmationDialog = false
-    @State private var selectPhotoData: Data?
-    @State private var selectPhotosPickerItem: PhotosPickerItem?
-    @State var showPhotosPicker: Bool = false
-    @State var showCamera: Bool = false
-    
     @State private var shouldPresentImagePicker = false
-    @State private var shouldPresentActionScheet = false
     @State private var shouldPresentCamera = false
-    
-    @State private var image: Image? = Image("karthick")
+    @State private var image: UIImage?
     
     var body: some View {
         NavigationView {
@@ -120,48 +114,29 @@ struct EditProfileView: View {
                     }
                     buttonChangePhotoView()
                 }
-            }
-            .confirmationDialog(Text("change photo"), isPresented: $showChangePhotoConfirmationDialog, titleVisibility: .hidden) {
-                Button("Take a picture") {
-//                    showCamera.toggle()
-                    shouldPresentImagePicker.toggle()
-                    shouldPresentCamera.toggle()
+                .confirmationDialog(Text("change photo"), isPresented: $showChangePhotoConfirmationDialog, titleVisibility: .hidden) {
+                    Button("Camera") {
+                        self.shouldPresentImagePicker = true
+                        self.shouldPresentCamera = true
+                    }
+                    Button("Photo Library") {
+                        self.shouldPresentImagePicker = true
+                        self.shouldPresentCamera = false
+                    }
+                    Button("Cancel", role: .cancel) {
+                        showChangePhotoConfirmationDialog.toggle()
+                    }
                 }
-                Button("Сhoose from gallery") {
-//                    showPhotosPicker.toggle()
-                    shouldPresentImagePicker.toggle()
-                    shouldPresentCamera.toggle()
+                .sheet(isPresented: $shouldPresentImagePicker) {
+                    ImagePicker(sourceType: self.shouldPresentCamera ? .camera : .photoLibrary, image: self.$image, isPresented: self.$shouldPresentImagePicker)
                 }
-                Button("Cancel", role: .cancel) {
-                    showChangePhotoConfirmationDialog.toggle()
+                .onChange(of: self.image) { newValue in
+                    if let uiImage = newValue {
+                        userProfile.userAvatar = uiImage
+                    }
                 }
             }
-//            .photosPicker(isPresented: $showPhotosPicker, selection: $selectPhotosPickerItem, matching: .any(of: [.images, .screenshots]))
-//            .onChange(of: selectPhotosPickerItem) { newValue in
-//                Task {
-//                    if let data = try? await newValue?.loadTransferable(type: Data.self) {
-//                        if let uiImage = UIImage(data: data) {
-//                            userProfile.userAvatar = uiImage
-//                        }
-//                    }
-//                }
-//            }
-//            .alert("Say Cheese!!", isPresented: $showCamera) {
-//                Text("Mimicking showing camera")
-//            }
-            .sheet(isPresented: $shouldPresentImagePicker) {
-                ImagePicker(sourceType: self.shouldPresentCamera ? .camera : .photoLibrary, image: self.$image, isPresented: self.$shouldPresentImagePicker)
-            }
-//            .actionSheet(isPresented: $shouldPresentActionScheet) { () -> ActionSheet in
-//                        ActionSheet(title: Text("Choose mode"), message: Text("Please choose your preferred mode to set your profile image"), buttons: [ActionSheet.Button.default(Text("Camera"), action: {
-//                            self.shouldPresentImagePicker = true
-//                            self.shouldPresentCamera = true
-//                        }), ActionSheet.Button.default(Text("Photo Library"), action: {
-//                            self.shouldPresentImagePicker = true
-//                            self.shouldPresentCamera = false
-//                        }), ActionSheet.Button.cancel()])
-//                    }
-
+            
             Section(header: Text("First name")) {
                 TextField("first name",text: $userProfile.userData.firstName)
             }
@@ -175,6 +150,7 @@ struct EditProfileView: View {
                 TextField("Phone",text: $userProfile.userData.phoneNumber)
             }
         }
+        
     }
     
     private func buttonChangePhotoView() -> some View {
@@ -187,13 +163,8 @@ struct EditProfileView: View {
             .padding()
             .onTapGesture {
                 self.showChangePhotoConfirmationDialog.toggle()
-                self.shouldPresentActionScheet.toggle()
             }
     }
-//
-//    private func photosPicker() -> some View {
-//        return PhotosPicker("Select images", selection: $selectPhotosPickerItem, matching: .images)
-//    }
     
     func saveChangeDate() {
         userAuth.userProfile = self.userProfile
@@ -223,7 +194,7 @@ struct EditProfileView_Previews: PreviewProvider {
     
     static var previews: some View {
         EditProfileView(userProfile: USER_DEFAULT)
-        .environmentObject(userAuth)
-        .environmentObject(viewState)
+            .environmentObject(userAuth)
+            .environmentObject(viewState)
     }
 }
