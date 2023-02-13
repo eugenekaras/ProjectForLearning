@@ -30,7 +30,6 @@ class UserAuth: ObservableObject {
             self.state = .signedOut
             return
         }
-        
         self.userProfile = try await UserProfile(userId: user.uid)
         if self.userProfile == nil {
             self.userProfile = UserProfile(user: User(

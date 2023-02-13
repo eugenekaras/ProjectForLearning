@@ -33,6 +33,12 @@ struct EditProfileView: View {
     @State var showPhotosPicker: Bool = false
     @State var showCamera: Bool = false
     
+    @State private var shouldPresentImagePicker = false
+    @State private var shouldPresentActionScheet = false
+    @State private var shouldPresentCamera = false
+    
+    @State private var image: Image? = Image("karthick")
+    
     var body: some View {
         NavigationView {
             Group {
@@ -117,26 +123,45 @@ struct EditProfileView: View {
             }
             .confirmationDialog(Text("change photo"), isPresented: $showChangePhotoConfirmationDialog, titleVisibility: .hidden) {
                 Button("Take a picture") {
-                    print("Take a picture")
+//                    showCamera.toggle()
+                    shouldPresentImagePicker.toggle()
+                    shouldPresentCamera.toggle()
                 }
                 Button("Сhoose from gallery") {
-                    showPhotosPicker.toggle()
+//                    showPhotosPicker.toggle()
+                    shouldPresentImagePicker.toggle()
+                    shouldPresentCamera.toggle()
                 }
                 Button("Cancel", role: .cancel) {
-                    self.showChangePhotoConfirmationDialog.toggle()
+                    showChangePhotoConfirmationDialog.toggle()
                 }
             }
-            .photosPicker(isPresented: $showPhotosPicker, selection: $selectPhotosPickerItem, matching: .any(of: [.images, .screenshots]))
-            .onChange(of: selectPhotosPickerItem) { newValue in
-                Task {
-                    if let data = try? await newValue?.loadTransferable(type: Data.self) {
-                        if let uiImage = UIImage(data: data) {
-                            userProfile.userAvatar = uiImage
-                        }
-                    }
-                }
+//            .photosPicker(isPresented: $showPhotosPicker, selection: $selectPhotosPickerItem, matching: .any(of: [.images, .screenshots]))
+//            .onChange(of: selectPhotosPickerItem) { newValue in
+//                Task {
+//                    if let data = try? await newValue?.loadTransferable(type: Data.self) {
+//                        if let uiImage = UIImage(data: data) {
+//                            userProfile.userAvatar = uiImage
+//                        }
+//                    }
+//                }
+//            }
+//            .alert("Say Cheese!!", isPresented: $showCamera) {
+//                Text("Mimicking showing camera")
+//            }
+            .sheet(isPresented: $shouldPresentImagePicker) {
+                ImagePicker(sourceType: self.shouldPresentCamera ? .camera : .photoLibrary, image: self.$image, isPresented: self.$shouldPresentImagePicker)
             }
-            
+//            .actionSheet(isPresented: $shouldPresentActionScheet) { () -> ActionSheet in
+//                        ActionSheet(title: Text("Choose mode"), message: Text("Please choose your preferred mode to set your profile image"), buttons: [ActionSheet.Button.default(Text("Camera"), action: {
+//                            self.shouldPresentImagePicker = true
+//                            self.shouldPresentCamera = true
+//                        }), ActionSheet.Button.default(Text("Photo Library"), action: {
+//                            self.shouldPresentImagePicker = true
+//                            self.shouldPresentCamera = false
+//                        }), ActionSheet.Button.cancel()])
+//                    }
+
             Section(header: Text("First name")) {
                 TextField("first name",text: $userProfile.userData.firstName)
             }
@@ -162,12 +187,13 @@ struct EditProfileView: View {
             .padding()
             .onTapGesture {
                 self.showChangePhotoConfirmationDialog.toggle()
+                self.shouldPresentActionScheet.toggle()
             }
     }
-    
-    private func photosPicker() -> some View {
-        return PhotosPicker("Select images", selection: $selectPhotosPickerItem, matching: .images)
-    }
+//
+//    private func photosPicker() -> some View {
+//        return PhotosPicker("Select images", selection: $selectPhotosPickerItem, matching: .images)
+//    }
     
     func saveChangeDate() {
         userAuth.userProfile = self.userProfile
@@ -196,13 +222,7 @@ struct EditProfileView_Previews: PreviewProvider {
     static var viewState = ViewState()
     
     static var previews: some View {
-        EditProfileView(userProfile: UserProfile(user: User(
-            userId: "12345",
-            email: "someemail@gmail.com",
-            displayName: "Tom Kruz",
-            phoneNumber: "12345",
-            url: nil), userAvatar: nil)
-        )
+        EditProfileView(userProfile: USER_DEFAULT)
         .environmentObject(userAuth)
         .environmentObject(viewState)
     }
