@@ -22,13 +22,18 @@ struct UserFormView: View {
                 VStack(alignment: .leading) {
                     Text(userAuth.userProfile?.userData.displayName ?? "")
                         .font(.headline)
-                        .padding(.bottom)
                     
                     Text(userAuth.userProfile?.userData.email ?? "")
                         .font(.subheadline)
                     
                     Text(userAuth.userProfile?.userData.phoneNumber ?? "")
                         .font(.subheadline)
+                        .padding(.bottom)
+                    
+                    Text(userAuth.userProfile?.userData.bio ?? "")
+                        .font(.footnote)
+                        .lineLimit(2)
+                        .multilineTextAlignment(.leading)
                 }
                 Spacer()
             }

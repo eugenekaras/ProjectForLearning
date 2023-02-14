@@ -82,24 +82,40 @@ struct EditProfileView: View {
                     Text("First name:")
                     Spacer()
                     Text(userAuth.userProfile?.userData.firstName ?? "").foregroundColor(.secondary)
+                        .textContentType(.givenName)
                 }
                 
                 HStack {
                     Text("Last name:")
                     Spacer()
                     Text(userAuth.userProfile?.userData.lastName ?? "").foregroundColor(.secondary)
+                        .textContentType(.familyName)
                 }
                 
                 HStack {
                     Text("Email:")
                     Spacer()
                     Text(userAuth.userProfile?.userData.email ?? "").foregroundColor(.secondary)
+                        .textContentType(.emailAddress)
                 }
                 
                 HStack {
                     Text("Phone:")
                     Spacer()
                     Text(userAuth.userProfile?.userData.phoneNumber ?? "").foregroundColor(.secondary)
+                        .textContentType(.telephoneNumber)
+                }
+                
+                VStack(alignment: .leading) {
+                    Text("Bio:")
+                    Spacer()
+                    HStack{
+                        Text(userAuth.userProfile?.userData.bio ?? "")
+                            .foregroundColor(.secondary)
+                            .lineLimit(nil)
+                            .multilineTextAlignment(.leading)
+  
+                    }
                 }
             }
         }
@@ -145,9 +161,17 @@ struct EditProfileView: View {
             }
             Section(header: Text("Email")) {
                 TextField("Email",text: $userProfile.userData.email)
+                    .keyboardType(.emailAddress)
             }
             Section(header: Text("Phone")) {
                 TextField("Phone",text: $userProfile.userData.phoneNumber)
+                    .keyboardType(.phonePad)
+            }
+            Section(header: Text("Bio")) {
+                TextEditor(text: $userProfile.userData.bio)
+                    .multilineTextAlignment(.leading)
+                    .disableAutocorrection(true)
+                    .frame(height: 200)
             }
         }
         

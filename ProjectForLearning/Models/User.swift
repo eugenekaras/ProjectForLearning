@@ -13,6 +13,7 @@ struct User: Codable {
     var lastName: String = ""
     var email: String = ""
     var phoneNumber: String = ""
+    var bio: String = ""
     var url: URL?
     
     var displayName: String? {
