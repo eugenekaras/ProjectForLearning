@@ -11,12 +11,19 @@ struct UserProfile {
     var userAvatar: UIImage?
     var userData: User
     
+    private var url: URL {
+        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+        return paths[0].appendingPathComponent("\(self.userData.userId).jpg")
+    }
+    
     init?(userId: String) async throws {
         if let userData = try await User(userId: userId) {
             self.userData = userData
-            if let userAvatar = try await getImage(fileName: userId) {  
-                self.userAvatar = userAvatar
-            }
+//            if let userAvatar = try await getImage(fileName: userId) {
+//                self.userAvatar = userAvatar
+//            }
+            url.loadImage(&userAvatar)
+
             return
         }
         return nil
@@ -31,11 +38,17 @@ struct UserProfile {
             try await userData.saveUserData()
             
             if let image = userAvatar {
-                try await saveImage(image: image, fileName: userData.userId)
+                url.saveImage(image)
+//                try await saveImage(image: image, fileName: userData.userId)
             }
     }
+    
+    
 
     func getImage(fileName: String) async throws -> UIImage? {
+        
+        
+        
         if let directory = try? FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: false) {
             return UIImage(contentsOfFile: URL(fileURLWithPath: directory.absoluteString).appendingPathComponent("\(fileName).jpg").path)
         }
