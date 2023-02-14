@@ -32,13 +32,16 @@ class UserAuth: ObservableObject {
         }
         self.userProfile = try await UserProfile(userId: user.uid)
         if self.userProfile == nil {
-            self.userProfile = UserProfile(user: User(
-                userId: user.uid,
-                email: user.email,
-                displayName: user.displayName,
-                phoneNumber: user.phoneNumber,
-                url: user.photoURL),
-                 userAvatar: nil)
+            self.userProfile = UserProfile(user:
+                                            User(
+                                                userId: user.uid,
+                                                email: user.email,
+                                                displayName: user.displayName,
+                                                phoneNumber: user.phoneNumber,
+                                                url: user.photoURL
+                                            ),
+                                           userAvatar: nil)
+            
             try await self.userProfile?.saveProfileData()
         }
         self.state = .signedIn

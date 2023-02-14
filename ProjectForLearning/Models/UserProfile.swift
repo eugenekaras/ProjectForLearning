@@ -11,7 +11,7 @@ struct UserProfile {
     var userAvatar: UIImage?
     var userData: User
     
-    private var url: URL {
+    private var urlForUserAvatar: URL {
         let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
         return paths[0].appendingPathComponent("\(self.userData.userId).jpg")
     }
@@ -19,11 +19,7 @@ struct UserProfile {
     init?(userId: String) async throws {
         if let userData = try await User(userId: userId) {
             self.userData = userData
-//            if let userAvatar = try await getImage(fileName: userId) {
-//                self.userAvatar = userAvatar
-//            }
-            url.loadImage(&userAvatar)
-
+            urlForUserAvatar.loadImage(&userAvatar)
             return
         }
         return nil
@@ -35,38 +31,10 @@ struct UserProfile {
     }
     
     func saveProfileData() async throws {
-            try await userData.saveUserData()
-            
-            if let image = userAvatar {
-                url.saveImage(image)
-//                try await saveImage(image: image, fileName: userData.userId)
-            }
-    }
-    
-    
-
-    func getImage(fileName: String) async throws -> UIImage? {
+        try await userData.saveUserData()
         
-        
-        
-        if let directory = try? FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: false) {
-            return UIImage(contentsOfFile: URL(fileURLWithPath: directory.absoluteString).appendingPathComponent("\(fileName).jpg").path)
-        }
-        return nil
-    }
-    
-    func saveImage(image: UIImage, fileName: String) async throws {
-        guard let data = image.jpegData(compressionQuality: 1) ?? image.pngData() else {
-            fatalError("Error converting image to jpeg or png format")
-        }
-        guard let directory = try? FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true) as NSURL else {
-            fatalError("Error access to app user data")
-        }
-        
-        do {
-            try data.write(to: directory.appendingPathComponent("\(fileName).jpg")!)
-        } catch {
-            print(error.localizedDescription)
+        if let image = userAvatar {
+            urlForUserAvatar.saveImage(image)
         }
     }
 }

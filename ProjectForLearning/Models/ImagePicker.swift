@@ -24,9 +24,7 @@ struct ImagePicker: UIViewControllerRepresentable {
          return pickerController
      }
 
-     func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {
-
-     }
+     func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) { }
 }
 
 class ImagePickerViewCoordinator: NSObject, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
@@ -42,7 +40,6 @@ class ImagePickerViewCoordinator: NSObject, UINavigationControllerDelegate, UIIm
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
             self.image = image
-//            self.image = Image(uiImage: image)
         }
         self.isPresented = false
     }

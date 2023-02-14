@@ -5,8 +5,7 @@
 //  Created by Евгений Карась on 1.02.23.
 //
 
-import FirebaseAuth
-import SwiftUI
+import Foundation
 
 struct User: Codable {
     var userId: String

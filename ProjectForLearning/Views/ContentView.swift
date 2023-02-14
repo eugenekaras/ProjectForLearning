@@ -32,7 +32,6 @@ struct ContentView: View {
             case .greeting: GreetingPageView()
             case .signIn: MainTabBarView()
             case .signOut: SignInView()
-//            case .editUserData: EditProfileView()
             case .editUserData: EditProfileView(userProfile: userAuth.userProfile ?? USER_DEFAULT)
             }
         }

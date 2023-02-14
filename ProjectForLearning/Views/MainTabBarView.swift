@@ -8,8 +8,7 @@
 import SwiftUI
 
 struct MainTabBarView: View {
-//    @State private var selectedTab = 1
-    @SceneStorage("selectedTab") private var selectedTab = 1
+    @State private var selectedTab = 1
     
     var body: some View {
         TabView(selection: $selectedTab) {
