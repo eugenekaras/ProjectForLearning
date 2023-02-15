@@ -9,28 +9,32 @@ import SwiftUI
 
 struct UserFormView: View {
     @EnvironmentObject var userAuth: UserAuth
-    @EnvironmentObject var viewState: ViewState
+    @State var showingEditProfileView = false
     
     var body: some View {
+        let binding = Binding(
+            get: { self.userAuth.userProfile },
+            set: { self.userAuth.userProfile = $0 }
+        )
         ZStack(alignment: .topTrailing){
             HStack {
-                UserImage(userProfile: userAuth.userProfile ?? USER_DEFAULT)
+                UserImage(userProfile: userAuth.userProfile ?? UserProfile.userProfileDefault)
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 140, height: 140, alignment: .center)
                     .cornerRadius(8)
                 
                 VStack(alignment: .leading) {
-                    Text(userAuth.userProfile?.userData.displayName ?? "")
+                    Text(userAuth.userProfile?.user.displayName ?? "")
                         .font(.headline)
                     
-                    Text(userAuth.userProfile?.userData.email ?? "")
+                    Text(userAuth.userProfile?.user.email ?? "")
                         .font(.subheadline)
                     
-                    Text(userAuth.userProfile?.userData.phoneNumber ?? "")
+                    Text(userAuth.userProfile?.user.phoneNumber ?? "")
                         .font(.subheadline)
                         .padding(.bottom)
                     
-                    Text(userAuth.userProfile?.userData.bio ?? "")
+                    Text(userAuth.userProfile?.user.bio ?? "")
                         .font(.footnote)
                         .lineLimit(2)
                         .multilineTextAlignment(.leading)
@@ -40,10 +44,17 @@ struct UserFormView: View {
             .frame(maxWidth: .infinity)
             .background(Color(.secondarySystemBackground))
             .cornerRadius(12)
-            
+
             buttonEditFormView()
         }
+        .sheet(isPresented: $showingEditProfileView, onDismiss: didDismissEditProfileView) {
+            EditProfileView(userProfile: binding, dismissEditProfileView: didDismissEditProfileView)
+        }
         .padding()
+    }
+    
+    func didDismissEditProfileView() {
+        showingEditProfileView = false
     }
     
     private func buttonEditFormView() -> some View {
@@ -55,18 +66,16 @@ struct UserFormView: View {
             .clipShape(Capsule())
             .padding()
             .onTapGesture {
-                viewState.contentViewState = .editUserData
+                self.showingEditProfileView.toggle()
             }
     }
 }
 
 struct UserFormView_Previews: PreviewProvider {
     static var userAuth = UserAuth()
-    static var viewState = ViewState()
     
     static var previews: some View {
         UserFormView()
             .environmentObject(userAuth)
-            .environmentObject(viewState)
     }
 }

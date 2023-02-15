@@ -15,7 +15,7 @@ struct UserImage: View {
             Image(uiImage: uiImage)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-        } else if let url = userProfile.userData.url {
+        } else if let url = userProfile.user.url {
             AsyncImage(url: url) { image in
                 image
                     .resizable()
@@ -33,6 +33,6 @@ struct UserImage: View {
 
 struct NetworkImage_Previews: PreviewProvider {
     static var previews: some View {
-        UserImage(userProfile: USER_DEFAULT)
+        UserImage(userProfile: UserProfile.userProfileDefault)
     }
 }

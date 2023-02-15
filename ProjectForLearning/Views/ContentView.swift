@@ -18,24 +18,30 @@ enum ContentViewError: LocalizedError {
     }
 }
 
+enum ContentViewState {
+    case splash
+    case greeting
+    case signIn
+    case signOut
+}
+
 struct ContentView: View {
     @EnvironmentObject var userAuth: UserAuth
-    @EnvironmentObject var viewState: ViewState
     
     @State private var showError = false
     @State private var error: ContentViewError?
+    @State private var contentViewState: ContentViewState = .splash
     
     var body: some View {
         Group {
-            switch viewState.contentViewState {
+            switch contentViewState {
             case .splash: SplashScreenView()
             case .greeting: GreetingPageView()
             case .signIn: MainTabBarView()
             case .signOut: SignInView()
-            case .editUserData: EditProfileView(userProfile: userAuth.userProfile ?? USER_DEFAULT)
             }
         }
-        .animation(.default, value: viewState.contentViewState)
+        .animation(.default, value: contentViewState)
         .task {
             checkUser()
         }
@@ -45,17 +51,17 @@ struct ContentView: View {
     }
     
     func updateViewState(with signInState: UserAuth.SignInState) {
-        if (viewState.contentViewState == .signOut) && (signInState == .signedIn) {
-            viewState.contentViewState = .greeting
+        if (contentViewState == .signOut) && (signInState == .signedIn) {
+            contentViewState = .greeting
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 3.0){
-                viewState.contentViewState = .signIn
+                contentViewState = .signIn
             }
         } else {
             switch signInState {
-            case .unknown: viewState.contentViewState = .splash
-            case .signedIn: viewState.contentViewState = .signIn
-            case .signedOut: viewState.contentViewState = .signOut
+            case .unknown: contentViewState = .splash
+            case .signedIn: contentViewState = .signIn
+            case .signedOut: contentViewState = .signOut
             }
         }
     }
@@ -82,11 +88,9 @@ struct ContentView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var userAuth = UserAuth()
-    static var viewState = ViewState()
     
     static var previews: some View {
         ContentView()
             .environmentObject(userAuth)
-            .environmentObject(viewState)
     }
 }

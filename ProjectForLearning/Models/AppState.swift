@@ -8,6 +8,5 @@
 import Foundation
 
 class AppState : ObservableObject {
-    var viewState = ViewState()
     var userAuth = UserAuth()
 }

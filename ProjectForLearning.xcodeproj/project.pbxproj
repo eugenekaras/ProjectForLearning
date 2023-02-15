@@ -18,11 +18,8 @@
 		E98F22732992E1940074C059 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = E98F22752992E1940074C059 /* Localizable.strings */; };
 		E98F227F299586090074C059 /* EditProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98F227E299586090074C059 /* EditProfileView.swift */; };
 		E98F228129968EC10074C059 /* UserFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98F228029968EC10074C059 /* UserFormView.swift */; };
-		E98F2283299693760074C059 /* ViewState.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98F2282299693760074C059 /* ViewState.swift */; };
 		E98F22852996DD490074C059 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98F22842996DD490074C059 /* UserProfile.swift */; };
-		E98F2287299A4EAE0074C059 /* Const.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98F2286299A4EAE0074C059 /* Const.swift */; };
 		E98F2289299A70020074C059 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98F2288299A70020074C059 /* ImagePicker.swift */; };
-		E98F228B299B0C6B0074C059 /* Extension+URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98F228A299B0C6B0074C059 /* Extension+URL.swift */; };
 		E9A6774E297B02FF009CF826 /* MainTabBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9A6774D297B02FF009CF826 /* MainTabBarView.swift */; };
 		E9A67750297B0314009CF826 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9A6774F297B0314009CF826 /* AppState.swift */; };
 		E9A67754297B09A8009CF826 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9A67753297B09A8009CF826 /* MainView.swift */; };
@@ -53,11 +50,8 @@
 		E98F227D2993F8940074C059 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		E98F227E299586090074C059 /* EditProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileView.swift; sourceTree = "<group>"; };
 		E98F228029968EC10074C059 /* UserFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserFormView.swift; sourceTree = "<group>"; };
-		E98F2282299693760074C059 /* ViewState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewState.swift; sourceTree = "<group>"; };
 		E98F22842996DD490074C059 /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
-		E98F2286299A4EAE0074C059 /* Const.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Const.swift; sourceTree = "<group>"; };
 		E98F2288299A70020074C059 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
-		E98F228A299B0C6B0074C059 /* Extension+URL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+URL.swift"; sourceTree = "<group>"; };
 		E9A677472979E6A8009CF826 /* ProjectForLearning.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ProjectForLearning.entitlements; sourceTree = "<group>"; };
 		E9A6774D297B02FF009CF826 /* MainTabBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarView.swift; sourceTree = "<group>"; };
 		E9A6774F297B0314009CF826 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
@@ -158,13 +152,10 @@
 			isa = PBXGroup;
 			children = (
 				E9A6774F297B0314009CF826 /* AppState.swift */,
-				E98F2282299693760074C059 /* ViewState.swift */,
 				E98F2288299A70020074C059 /* ImagePicker.swift */,
 				E9A67786297C7000009CF826 /* UserAuth.swift */,
 				E98F2265298A7F0A0074C059 /* User.swift */,
-				E98F2286299A4EAE0074C059 /* Const.swift */,
 				E98F22842996DD490074C059 /* UserProfile.swift */,
-				E98F228A299B0C6B0074C059 /* Extension+URL.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -284,11 +275,9 @@
 				E9A67787297C7000009CF826 /* UserAuth.swift in Sources */,
 				E9A6778A297CB2C9009CF826 /* GreetingPageView.swift in Sources */,
 				E9A67758297B09D9009CF826 /* SomeView.swift in Sources */,
-				E98F228B299B0C6B0074C059 /* Extension+URL.swift in Sources */,
 				E98F22852996DD490074C059 /* UserProfile.swift in Sources */,
 				E98F226E298D71000074C059 /* UserImage.swift in Sources */,
 				E980590C29780D6D006379E8 /* ProjectForLearningApp.swift in Sources */,
-				E98F2287299A4EAE0074C059 /* Const.swift in Sources */,
 				E9A67754297B09A8009CF826 /* MainView.swift in Sources */,
 				E98F2266298A7F0A0074C059 /* User.swift in Sources */,
 				E98F228129968EC10074C059 /* UserFormView.swift in Sources */,
@@ -296,7 +285,6 @@
 				E9A6774E297B02FF009CF826 /* MainTabBarView.swift in Sources */,
 				E93EBC042979C8AB007940BA /* SplashScreenView.swift in Sources */,
 				E98F2289299A70020074C059 /* ImagePicker.swift in Sources */,
-				E98F2283299693760074C059 /* ViewState.swift in Sources */,
 				E9A6775A297B245A009CF826 /* SignInView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

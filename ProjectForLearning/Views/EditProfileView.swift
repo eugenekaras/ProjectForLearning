@@ -20,43 +20,33 @@ enum EditProfileError: LocalizedError {
 }
 
 struct EditProfileView: View {
-    @EnvironmentObject var viewState: ViewState
-    @EnvironmentObject var userAuth: UserAuth
-    
     @State private var showError = false
     @State private var error: EditProfileError?
-    @State var userProfile: UserProfile
-    @State var mode: EditMode = .inactive
-    
+    @State var mode: EditMode = .active
     @State private var showChangePhotoConfirmationDialog = false
     @State private var shouldPresentImagePicker = false
     @State private var shouldPresentCamera = false
     @State private var image: UIImage?
+    @State var tmpUserProfile: UserProfile = UserProfile.userProfileDefault
+    @Binding var userProfile: UserProfile?
+    
+    var dismissEditProfileView: () -> Void
     
     var body: some View {
         NavigationView {
             Group {
-                if mode.isEditing {
-                    editFormView()
-                } else {
-                    formView()
-                }
+                editFormView()
             }
             .animation(.default, value: mode)
             .navigationTitle("Profile")
             .navigationBarItems(
                 leading: HStack{
-                    if mode == .active {
-                        Button("Cancel") {
-                            if let userProfile = userAuth.userProfile {
-                                self.userProfile = userProfile
-                            }
-                            mode = .inactive
+                    Button("Cancel") {
+                        if let userProfile = userProfile {
+                            tmpUserProfile = userProfile
                         }
-                    } else if mode == .inactive  {
-                        Button("Back") {
-                            viewState.contentViewState = .signIn
-                        }
+                        dismissEditProfileView()
+                        mode = .inactive
                     }
                 },
                 trailing: HStack{
@@ -66,57 +56,12 @@ struct EditProfileView: View {
             .environment(\.editMode, self.$mode)
             .onChange(of: mode) { _ in
                 saveChangeDate()
+                dismissEditProfileView()
             }
         }
-    }
-    
-    private func formView() -> some View {
-        return Form{
-            Section(header: Text("My foto")) {
-                HStack {
-                    UserImage(userProfile: userAuth.userProfile ?? USER_DEFAULT)
-                }
-            }
-            Section(header: Text("My info")) {
-                HStack {
-                    Text("First name:")
-                    Spacer()
-                    Text(userAuth.userProfile?.userData.firstName ?? "").foregroundColor(.secondary)
-                        .textContentType(.givenName)
-                }
-                
-                HStack {
-                    Text("Last name:")
-                    Spacer()
-                    Text(userAuth.userProfile?.userData.lastName ?? "").foregroundColor(.secondary)
-                        .textContentType(.familyName)
-                }
-                
-                HStack {
-                    Text("Email:")
-                    Spacer()
-                    Text(userAuth.userProfile?.userData.email ?? "").foregroundColor(.secondary)
-                        .textContentType(.emailAddress)
-                }
-                
-                HStack {
-                    Text("Phone:")
-                    Spacer()
-                    Text(userAuth.userProfile?.userData.phoneNumber ?? "").foregroundColor(.secondary)
-                        .textContentType(.telephoneNumber)
-                }
-                
-                VStack(alignment: .leading) {
-                    Text("Bio:")
-                    Spacer()
-                    HStack{
-                        Text(userAuth.userProfile?.userData.bio ?? "")
-                            .foregroundColor(.secondary)
-                            .lineLimit(nil)
-                            .multilineTextAlignment(.leading)
-  
-                    }
-                }
+        .onAppear() {
+            if let userProfile = userProfile {
+                tmpUserProfile = userProfile
             }
         }
     }
@@ -126,7 +71,7 @@ struct EditProfileView: View {
             Section(header: Text("My foto")) {
                 ZStack(alignment: .topTrailing){
                     HStack{
-                        UserImage(userProfile: userProfile)
+                        UserImage(userProfile: tmpUserProfile)
                     }
                     buttonChangePhotoView()
                 }
@@ -148,33 +93,32 @@ struct EditProfileView: View {
                 }
                 .onChange(of: self.image) { newValue in
                     if let uiImage = newValue {
-                        userProfile.userAvatar = uiImage
+                        tmpUserProfile.userAvatar = uiImage
                     }
                 }
             }
             
             Section(header: Text("First name")) {
-                TextField("first name",text: $userProfile.userData.firstName)
+                TextField("first name",text: $tmpUserProfile.user.firstName)
             }
             Section(header: Text("Last name")) {
-                TextField("Last name",text: $userProfile.userData.lastName)
+                TextField("Last name",text: $tmpUserProfile.user.lastName)
             }
             Section(header: Text("Email")) {
-                TextField("Email",text: $userProfile.userData.email)
+                TextField("Email",text: $tmpUserProfile.user.email)
                     .keyboardType(.emailAddress)
             }
             Section(header: Text("Phone")) {
-                TextField("Phone",text: $userProfile.userData.phoneNumber)
+                TextField("Phone",text: $tmpUserProfile.user.phoneNumber)
                     .keyboardType(.phonePad)
             }
             Section(header: Text("Bio")) {
-                TextEditor(text: $userProfile.userData.bio)
+                TextEditor(text: $tmpUserProfile.user.bio)
                     .multilineTextAlignment(.leading)
                     .disableAutocorrection(true)
                     .frame(height: 200)
             }
         }
-        
     }
     
     private func buttonChangePhotoView() -> some View {
@@ -191,13 +135,13 @@ struct EditProfileView: View {
     }
     
     func saveChangeDate() {
-        userAuth.userProfile = self.userProfile
+        userProfile = tmpUserProfile
         
         Task {
             do {
-                try await userAuth.userProfile?.saveProfileData()
+                try await userProfile?.saveProfileData()
             } catch {
-                showError(error: error)
+                await showError(error: error)
             }
         }
     }
@@ -213,12 +157,9 @@ struct EditProfileView: View {
 }
 
 struct EditProfileView_Previews: PreviewProvider {
-    static var userAuth = UserAuth()
-    static var viewState = ViewState()
-    
     static var previews: some View {
-        EditProfileView(userProfile: USER_DEFAULT)
-            .environmentObject(userAuth)
-            .environmentObject(viewState)
+        EditProfileView( userProfile: Binding(
+            get: { UserProfile.userProfileDefault },
+            set: { UserProfile.userProfileDefault = $0!}), dismissEditProfileView: { })
     }
 }

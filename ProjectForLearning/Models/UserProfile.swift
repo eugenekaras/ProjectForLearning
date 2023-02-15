@@ -8,33 +8,49 @@
 import SwiftUI
 
 struct UserProfile {
+    static var userProfileDefault: UserProfile = UserProfile(user: User(userId: "12345", email: "", displayName: "", phoneNumber: "", url: nil), userAvatar: nil)
     var userAvatar: UIImage?
-    var userData: User
+    var user: User
     
-    private var urlForUserAvatar: URL {
+    private var url: URL {
         let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
-        return paths[0].appendingPathComponent("\(self.userData.userId).jpg")
+        return paths[0].appendingPathComponent("\(self.user.userId).jpg")
     }
     
     init?(userId: String) async throws {
         if let userData = try await User(userId: userId) {
-            self.userData = userData
-            urlForUserAvatar.loadImage(&userAvatar)
+            self.user = userData
+            loadUserAvatar()
             return
         }
         return nil
     }
     
     init(user: User, userAvatar: UIImage?) {
-        self.userData = user
+        self.user = user
         self.userAvatar = userAvatar
     }
     
     func saveProfileData() async throws {
-        try await userData.saveUserData()
-        
+        try await user.saveUserData()
+        saveUserAvatar()
+    }
+    
+    mutating func loadUserAvatar(){
+        if let data = try? Data(contentsOf: url), let loaded = UIImage(data: data) {
+            userAvatar = loaded
+        } else {
+            userAvatar = nil
+        }
+    }
+    
+    func saveUserAvatar() {
         if let image = userAvatar {
-            urlForUserAvatar.saveImage(image)
+            if let data = image.jpegData(compressionQuality: 1.0) {
+                try? data.write(to: url)
+            }
+        } else {
+            try? FileManager.default.removeItem(at: url)
         }
     }
 }
