@@ -47,14 +47,12 @@ struct UserFormView: View {
 
             buttonEditFormView()
         }
-        .sheet(isPresented: $showingEditProfileView, onDismiss: didDismissEditProfileView) {
-            EditProfileView(userProfile: binding, dismissEditProfileView: didDismissEditProfileView)
+        .sheet(isPresented: $showingEditProfileView) {
+            EditProfileView(userProfile: binding) {
+                showingEditProfileView = false
+            }
         }
         .padding()
-    }
-    
-    func didDismissEditProfileView() {
-        showingEditProfileView = false
     }
     
     private func buttonEditFormView() -> some View {

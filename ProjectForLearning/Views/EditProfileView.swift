@@ -160,6 +160,6 @@ struct EditProfileView_Previews: PreviewProvider {
     static var previews: some View {
         EditProfileView( userProfile: Binding(
             get: { UserProfile.userProfileDefault },
-            set: { UserProfile.userProfileDefault = $0!}), dismissEditProfileView: { })
+            set: { UserProfile.userProfileDefault = $0!})) { }
     }
 }
