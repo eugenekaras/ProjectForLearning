@@ -26,12 +26,12 @@ class UserAuth: ObservableObject {
     @MainActor
     func updateUserProfile() async throws {
         guard let user = Auth.auth().currentUser else {
-            self.userProfile = nil
-            self.state = .signedOut
+            userProfile = nil
+            state = .signedOut
             return
         }
         self.userProfile = try await UserProfile(userId: user.uid)
-        if self.userProfile == nil {
+        if userProfile == nil {
             self.userProfile = UserProfile(user:
                                             User(
                                                 userId: user.uid,

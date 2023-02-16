@@ -53,7 +53,7 @@ struct EditProfileView: View {
                     EditButton()
                 }
             )
-            .environment(\.editMode, self.$mode)
+            .environment(\.editMode, $mode)
             .onChange(of: mode) { _ in
                 saveChangeDate()
                 dismissEditProfileView()
@@ -77,21 +77,21 @@ struct EditProfileView: View {
                 }
                 .confirmationDialog(Text("change photo"), isPresented: $showChangePhotoConfirmationDialog, titleVisibility: .hidden) {
                     Button("Camera") {
-                        self.shouldPresentImagePicker = true
-                        self.shouldPresentCamera = true
+                        shouldPresentImagePicker = true
+                        shouldPresentCamera = true
                     }
                     Button("Photo Library") {
-                        self.shouldPresentImagePicker = true
-                        self.shouldPresentCamera = false
+                        shouldPresentImagePicker = true
+                        shouldPresentCamera = false
                     }
                     Button("Cancel", role: .cancel) {
                         showChangePhotoConfirmationDialog.toggle()
                     }
                 }
                 .sheet(isPresented: $shouldPresentImagePicker) {
-                    ImagePicker(sourceType: self.shouldPresentCamera ? .camera : .photoLibrary, image: self.$image, isPresented: self.$shouldPresentImagePicker)
+                    ImagePicker(sourceType: shouldPresentCamera ? .camera : .photoLibrary, image: $image, isPresented: $shouldPresentImagePicker)
                 }
-                .onChange(of: self.image) { newValue in
+                .onChange(of: image) { newValue in
                     if let uiImage = newValue {
                         tmpUserProfile.userAvatar = uiImage
                     }
@@ -130,7 +130,7 @@ struct EditProfileView: View {
             .clipShape(Capsule())
             .padding()
             .onTapGesture {
-                self.showChangePhotoConfirmationDialog.toggle()
+                showChangePhotoConfirmationDialog.toggle()
             }
     }
     

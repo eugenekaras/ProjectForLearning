@@ -38,14 +38,14 @@ class ImagePickerViewCoordinator: NSObject, UINavigationControllerDelegate, UIIm
     }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
+        if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage { 
             self.image = image
         }
-        self.isPresented = false
+        isPresented = false
     }
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        self.isPresented = false
+        isPresented = false
     }
     
 }

@@ -72,8 +72,8 @@ struct SignInView: View {
     
     @MainActor
     func showError(error: Error) {
-        self.messageError = error.localizedDescription
-        self.showError.toggle()
+        messageError = error.localizedDescription
+        showError.toggle()
     }
 }
 
